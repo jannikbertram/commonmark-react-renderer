@@ -343,7 +343,10 @@ function renderNodes(block) {
             );
         }
 
-        if (node.isContainer && entering) {
+        if (context.length > this.maxDepth) {
+            // Do nothing, we should not regularly be nested this deeply and we don't want to cause React to
+            // overflow the stack
+        } else if (node.isContainer && entering) {
             node.react = {
                 component: renderer,
                 props: {},
@@ -441,7 +444,8 @@ function ReactRenderer(options) {
         allowedTypes: allowedTypes,
         unwrapDisallowed: Boolean(opts.unwrapDisallowed),
         render: renderNodes,
-        linkTarget: opts.linkTarget || false
+        linkTarget: opts.linkTarget || false,
+        maxDepth: opts.maxDepth || 30
     };
 }
 
