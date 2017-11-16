@@ -261,23 +261,19 @@ function renderNodes(block) {
         getExtraPropsForNode: this.getExtraPropsForNode
     };
 
-    var e, node, entering, leaving, type, doc, key, nodeProps, prevPos, prevIndex = 0, context = [];
+    var e;
+    var doc;
+    var context = [];
+    var index = 0;
     while ((e = walker.next())) {
-        var pos = getPosition(e.node.sourcepos ? e.node : e.node.parent);
-        if (prevPos === pos) {
-            key = pos + prevIndex;
-            prevIndex++;
-        } else {
-            key = pos;
-            prevIndex = 0;
-        }
+        var key = String(index);
+        index += 1;
 
-        prevPos = pos;
-        entering = e.entering;
-        leaving = !entering;
-        node = e.node;
-        type = normalizeTypeName(node.type);
-        nodeProps = null;
+        var entering = e.entering;
+        var leaving = !entering;
+        var node = e.node;
+        var type = normalizeTypeName(node.type);
+        var nodeProps = null;
 
         // If we have not assigned a document yet, assume the current node is just that
         if (!doc) {
