@@ -210,6 +210,10 @@ function getNodeProps(node, key, opts, renderer, context) {
         default:
     }
 
+    if (opts.getExtraPropsForNode) {
+        props = Object.assign(props, opts.getExtraPropsForNode(node));
+    }
+
     if (typeof renderer !== 'string') {
         props.literal = node.literal;
     }
@@ -253,7 +257,8 @@ function renderNodes(block) {
         transformLinkUri: this.transformLinkUri,
         transformImageUri: this.transformImageUri,
         softBreak: softBreak,
-        linkTarget: this.linkTarget
+        linkTarget: this.linkTarget,
+        getExtraPropsForNode: this.getExtraPropsForNode
     };
 
     var e, node, entering, leaving, type, doc, key, nodeProps, prevPos, prevIndex = 0, context = [];
@@ -445,7 +450,8 @@ function ReactRenderer(options) {
         unwrapDisallowed: Boolean(opts.unwrapDisallowed),
         render: renderNodes,
         linkTarget: opts.linkTarget || false,
-        maxDepth: opts.maxDepth || 30
+        maxDepth: opts.maxDepth || 30,
+        getExtraPropsForNode: opts.getExtraPropsForNode
     };
 }
 
