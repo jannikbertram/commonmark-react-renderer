@@ -14,7 +14,8 @@ var typeAliases = {
     codeblock: 'code_block',
     hardbreak: 'linebreak',
     atmention: 'at_mention',
-    channellink: 'channel_link'
+    channellink: 'channel_link',
+    editedindicator: 'edited_indicator'
 };
 
 var defaultRenderers = {
@@ -59,7 +60,8 @@ var defaultRenderers = {
 
     at_mention: null,
     channel_link: null,
-    emoji: null
+    emoji: null,
+    edited_indicator: null
 };
 
 var coreTypes = Object.keys(defaultRenderers);
@@ -206,6 +208,8 @@ function getNodeProps(node, key, opts, renderer, context) {
         case 'paragraph':
             props.first = !(node._prev && node._prev.type === 'paragraph');
             props.last = !(node._next && node._next.type === 'paragraph');
+            break;
+        case 'edited_indicator':
             break;
         default:
     }
