@@ -694,6 +694,59 @@ describe('react-markdown', function() {
             );
         });
     });
+
+    describe('tables', function() {
+        it('only header', function() {
+            var input = [
+                '|aaa|bbb|ccc|ddd|',
+                '|:-:|:--|--:|---|'
+            ].join('\n');
+            var expected = [
+                '<table>',
+                '<thead>',
+                '<tr>',
+                '<td class="align-center">aaa</td>',
+                '<td class="align-left">bbb</td>',
+                '<td class="align-right">ccc</td>',
+                '<td>ddd</td>',
+                '</tr>',
+                '</thead>',
+                '</table>'
+            ].join('');
+
+            expect(parse(input)).to.equal(expected);
+        });
+
+        it('header and body', function() {
+            var input = [
+                '|aaa|bbb|ccc|ddd|',
+                '|:-:|:--|--:|---|',
+                '|123|456|124|457|'
+            ].join('\n');
+            var expected = [
+                '<table>',
+                '<thead>',
+                '<tr>',
+                '<td class="align-center">aaa</td>',
+                '<td class="align-left">bbb</td>',
+                '<td class="align-right">ccc</td>',
+                '<td>ddd</td>',
+                '</tr>',
+                '</thead>',
+                '<tbody>',
+                '<tr>',
+                '<td class="align-center">123</td>',
+                '<td class="align-left">456</td>',
+                '<td class="align-right">124</td>',
+                '<td>457</td>',
+                '</tr>',
+                '</tbody>',
+                '</table>'
+            ].join('');
+
+            expect(parse(input)).to.equal(expected);
+        });
+    });
 });
 
 function getRenderer(opts) {

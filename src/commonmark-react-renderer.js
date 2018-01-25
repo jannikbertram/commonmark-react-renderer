@@ -14,7 +14,9 @@ var typeAliases = {
     codeblock: 'code_block',
     hardbreak: 'linebreak',
     atmention: 'at_mention',
-    channellink: 'channel_link'
+    channellink: 'channel_link',
+    tableRow: 'table_row',
+    tableCell: 'table_cell'
 };
 
 var defaultRenderers = {
@@ -59,7 +61,27 @@ var defaultRenderers = {
 
     at_mention: null,
     channel_link: null,
-    emoji: null
+    emoji: null,
+
+    table: function Table(props) {
+        var childrenArray = React.Children.toArray(props.children);
+
+        var children = [createElement('thead', {'key': 'thead'}, childrenArray.slice(0, 1))];
+        if (childrenArray.length > 1) {
+            children.push(createElement('tbody', {'key': 'tbody'}, childrenArray.slice(1)));
+        }
+
+        return createElement('table', getCoreProps(props), children);
+    },
+    table_row: 'tr',
+    table_cell: function TableCell(props) {
+        var newProps = getCoreProps(props);
+        if (props.align) {
+            newProps.className = 'align-' + props.align;
+        }
+
+        return createElement('td', newProps, props.children);
+    }
 };
 
 var coreTypes = Object.keys(defaultRenderers);
@@ -206,6 +228,13 @@ function getNodeProps(node, key, opts, renderer, context) {
         case 'paragraph':
             props.first = !(node._prev && node._prev.type === 'paragraph');
             props.last = !(node._next && node._next.type === 'paragraph');
+            break;
+        case 'table_row':
+            props.isHeading = node.isHeading;
+            break;
+        case 'table_cell':
+            props.isHeading = node.isHeading;
+            props.align = node.align;
             break;
         default:
     }
