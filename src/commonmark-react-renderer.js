@@ -344,16 +344,25 @@ function renderNodes(block) {
         }
 
         if (node.isContainer) {
+            var contextType = node.type;
+            if (node.level) {
+                contextType = node.type + node.level;
+            } else if (node.type === 'table_row' && node.parent.firstChild === node) {
+                contextType = 'table_header_row';
+            } else {
+                contextType = node.type;
+            }
+
             if (entering) {
-                context.push(node.level ? node.type + node.level : node.type);
+                context.push(contextType);
             } else {
                 var popped = context.pop();
 
                 if (!popped) {
                     throw new Error('Attempted to pop empty stack');
-                } else if (!popped.startsWith(node.type)) {
+                } else if (!popped === contextType) {
                     throw new Error('Popped context of type `' + pascalCase(popped) +
-                        '` when expecting context of type `' + pascalCase(node.type) + '`');
+                        '` when expecting context of type `' + pascalCase(contextType) + '`');
                 }
             }
         }

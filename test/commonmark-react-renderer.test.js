@@ -641,7 +641,7 @@ describe('react-markdown', function() {
         });
 
         it('should pass three-element list context into text renderer', function() {
-            expect(parse('* abc\n* def\n*hij', opts)).to.contain(
+            expect(parse('* abc\n* def\n* hij', opts)).to.contain(
                 '<span data-context="list,item">abc</span>'
             ).and.contain(
                 '<span data-context="list,item">def</span>'
@@ -691,6 +691,24 @@ describe('react-markdown', function() {
                 '<span data-context="block_quote,list,item,list,item,emph">def</span>'
             ).and.contain(
                 '<span data-context="block_quote,paragraph">klm</span>'
+            );
+        });
+
+        it('should pass table context into text renderer', function() {
+            var input = [
+                '|a|b|',
+                '|-|-|',
+                '|1|2|'
+            ].join('\n');
+
+            expect(parse(input, opts)).to.contain(
+                '<span data-context="table,table_header_row,table_cell">a</span>'
+            ).and.contain(
+                '<span data-context="table,table_header_row,table_cell">b</span>'
+            ).and.contain(
+                '<span data-context="table,table_row,table_cell">1</span>'
+            ).and.contain(
+                '<span data-context="table,table_row,table_cell">2</span>'
             );
         });
     });
