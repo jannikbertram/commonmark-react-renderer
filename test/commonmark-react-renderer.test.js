@@ -641,7 +641,7 @@ describe('react-markdown', function() {
         });
 
         it('should pass three-element list context into text renderer', function() {
-            expect(parse('* abc\n* def\n*hij', opts)).to.contain(
+            expect(parse('* abc\n* def\n* hij', opts)).to.contain(
                 '<span data-context="list,item">abc</span>'
             ).and.contain(
                 '<span data-context="list,item">def</span>'
@@ -692,6 +692,77 @@ describe('react-markdown', function() {
             ).and.contain(
                 '<span data-context="block_quote,paragraph">klm</span>'
             );
+        });
+
+        it('should pass table context into text renderer', function() {
+            var input = [
+                '|a|b|',
+                '|-|-|',
+                '|1|2|'
+            ].join('\n');
+
+            expect(parse(input, opts)).to.contain(
+                '<span data-context="table,table_header_row,table_cell">a</span>'
+            ).and.contain(
+                '<span data-context="table,table_header_row,table_cell">b</span>'
+            ).and.contain(
+                '<span data-context="table,table_row,table_cell">1</span>'
+            ).and.contain(
+                '<span data-context="table,table_row,table_cell">2</span>'
+            );
+        });
+    });
+
+    describe('tables', function() {
+        it('only header', function() {
+            var input = [
+                '|aaa|bbb|ccc|ddd|',
+                '|:-:|:--|--:|---|'
+            ].join('\n');
+            var expected = [
+                '<table>',
+                '<thead>',
+                '<tr>',
+                '<td class="align-center">aaa</td>',
+                '<td class="align-left">bbb</td>',
+                '<td class="align-right">ccc</td>',
+                '<td>ddd</td>',
+                '</tr>',
+                '</thead>',
+                '</table>'
+            ].join('');
+
+            expect(parse(input)).to.equal(expected);
+        });
+
+        it('header and body', function() {
+            var input = [
+                '|aaa|bbb|ccc|ddd|',
+                '|:-:|:--|--:|---|',
+                '|123|456|124|457|'
+            ].join('\n');
+            var expected = [
+                '<table>',
+                '<thead>',
+                '<tr>',
+                '<td class="align-center">aaa</td>',
+                '<td class="align-left">bbb</td>',
+                '<td class="align-right">ccc</td>',
+                '<td>ddd</td>',
+                '</tr>',
+                '</thead>',
+                '<tbody>',
+                '<tr>',
+                '<td class="align-center">123</td>',
+                '<td class="align-left">456</td>',
+                '<td class="align-right">124</td>',
+                '<td>457</td>',
+                '</tr>',
+                '</tbody>',
+                '</table>'
+            ].join('');
+
+            expect(parse(input)).to.equal(expected);
         });
     });
 });
