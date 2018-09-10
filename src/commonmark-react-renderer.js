@@ -60,10 +60,39 @@ var defaultRenderers = {
     text: null,
     softbreak: null,
 
-    at_mention: null,
-    channel_link: null,
-    emoji: null,
+    at_mention: function AtMention(props) {
+        var newProps = getCoreProps(props);
+        if (props.username) {
+            props['data-mention-name'] = props.username;
+        }
+
+        return createElement('span', newProps, props.children);
+    },
+    channel_link: function ChannelLink(props) {
+        var newProps = getCoreProps(props);
+        if (props.channelName) {
+            props['data-channel-name'] = props.channelName;
+        }
+
+        return createElement('span', newProps, props.children);
+    },
+    emoji: function Emoji(props) {
+        var newProps = getCoreProps(props);
+        if (props.emojiName) {
+            props['data-emoji-name'] = props.emojiName;
+        }
+
+        return createElement('span', newProps, props.children);
+    },
     edited_indicator: null,
+    hashtag: function Hashtag(props) {
+        var newProps = getCoreProps(props);
+        if (props.hashtag) {
+            props['data-hashtag'] = props.hashtag;
+        }
+
+        return createElement('span', newProps, props.children);
+    },
 
     table: function Table(props) {
         var childrenArray = React.Children.toArray(props.children);
@@ -226,6 +255,9 @@ function getNodeProps(node, key, opts, renderer, context) {
         case 'emoji':
             props.emojiName = node.emojiName;
             props.literal = node.literal;
+            break;
+        case 'hashtag':
+            props.hashtag = node.hashtag;
             break;
         case 'paragraph':
             props.first = !(node._prev && node._prev.type === 'paragraph');
