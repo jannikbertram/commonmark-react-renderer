@@ -385,6 +385,8 @@ function renderNodes(block) {
                 contextType = node.type + node.level;
             } else if (node.type === 'table_row' && node.parent.firstChild === node) {
                 contextType = 'table_header_row';
+            } else if (node.type === 'custom_inline' || node.type === 'custom_block') {
+                contextType = node.customType || node.type;
             } else {
                 contextType = node.type;
             }
