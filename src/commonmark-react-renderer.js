@@ -93,6 +93,16 @@ var defaultRenderers = {
 
         return createElement('span', newProps, props.children);
     },
+    mention_highlight: function MentionHighlight(props) {
+        var newProps = getCoreProps(props);
+        newProps['data-mention-highlight'] = 'true';
+        return createElement('span', newProps, props.children);
+    },
+    search_highlight: function SearchHighlight(props) {
+        var newProps = getCoreProps(props);
+        newProps['data-search-highlight'] = 'true';
+        return createElement('span', newProps, props.children);
+    },
 
     table: function Table(props) {
         var childrenArray = React.Children.toArray(props.children);
@@ -385,8 +395,6 @@ function renderNodes(block) {
                 contextType = node.type + node.level;
             } else if (node.type === 'table_row' && node.parent.firstChild === node) {
                 contextType = 'table_header_row';
-            } else if (node.type === 'custom_inline' || node.type === 'custom_block') {
-                contextType = node.customType || node.type;
             } else {
                 contextType = node.type;
             }
