@@ -275,6 +275,10 @@ function getNodeProps(node, key, opts, renderer, context) {
             break;
         case 'edited_indicator':
             break;
+        case 'table':
+            props.numRows = countRows(node);
+            props.numColumns = countColumns(node);
+            break;
         case 'table_row':
             props.isHeading = node.isHeading;
             break;
@@ -301,6 +305,24 @@ function getNodeProps(node, key, opts, renderer, context) {
     props.context = context.slice();
 
     return props;
+}
+
+function countChildren(node) {
+    var count = 0;
+
+    for (var child = node.firstChild; child; child = child.next) {
+        count += 1;
+    }
+
+    return count;
+}
+
+function countRows(table) {
+    return countChildren(table);
+}
+
+function countColumns(table) {
+    return countChildren(table.firstChild);
 }
 
 function getPosition(node) {
@@ -545,6 +567,8 @@ ReactRenderer.renderers = coreTypes.reduce(function(renderers, type) {
     renderers[pascalCase(type)] = defaultRenderers[type];
     return renderers;
 }, {});
+ReactRenderer.countRows = countRows;
+ReactRenderer.countColumns = countColumns;
 ReactRenderer.forwardChildren = forwardChildren;
 
 module.exports = ReactRenderer;

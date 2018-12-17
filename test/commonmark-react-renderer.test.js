@@ -767,6 +767,80 @@ describe('react-markdown', function() {
     });
 });
 
+describe('countRows', function() {
+    it('only header', function() {
+        var ast = parser.parse(
+            '|a|b|c|\n' +
+            '|-|-|-|\n'
+        );
+        var table = ast.firstChild;
+
+        expect(ReactRenderer.countRows(table)).to.equal(1);
+    });
+
+    it('multiple rows', function() {
+        var ast = parser.parse(
+            '|a|b|c|\n' +
+            '|-|-|-|\n' +
+            '|1|2|3|\n' +
+            '|4|5|6|\n'
+        );
+        var table = ast.firstChild;
+
+        expect(ReactRenderer.countRows(table)).to.equal(3);
+    });
+});
+
+describe('countColumns', function() {
+    it('only header', function() {
+        var ast = parser.parse(
+            '|a|b|c|\n' +
+            '|-|-|-|\n'
+        );
+        var table = ast.firstChild;
+
+        expect(ReactRenderer.countColumns(table)).to.equal(3);
+    });
+
+    it('multiple rows', function() {
+        var ast = parser.parse(
+            '|a|b|\n' +
+            '|-|-|\n' +
+            '|1|2|\n' +
+            '|4|5|\n'
+        );
+        var table = ast.firstChild;
+
+        expect(ReactRenderer.countColumns(table)).to.equal(2);
+    });
+
+    it('header shorter than other rows', function() {
+        var ast = parser.parse(
+            '|a|b|\n' +
+            '|-|-|\n' +
+            '|1|2|3|\n' +
+            '|4|5|6|7|\n'
+        );
+        var table = ast.firstChild;
+
+        // Note that extra columns are removed so that other rows match the header
+        expect(ReactRenderer.countColumns(table)).to.equal(2);
+    });
+
+    it('header longer than other rows', function() {
+        var ast = parser.parse(
+            '|a|b|c|d|e|f|\n' +
+            '|-|-|-|-|-|-|\n' +
+            '|1|2|3|\n' +
+            '|4|5|6|7|\n'
+        );
+        var table = ast.firstChild;
+
+        // Note that extra columns are added so that other rows match the header
+        expect(ReactRenderer.countColumns(table)).to.equal(6);
+    });
+});
+
 function getRenderer(opts) {
     if (opts) {
         return new ReactRenderer(opts);
