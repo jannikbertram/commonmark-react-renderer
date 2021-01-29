@@ -462,9 +462,11 @@ function renderNodes(block) {
         } else {
             var childProps = nodeProps || getNodeProps(node, key, propOptions, renderer, context);
             if (renderer === ReactRenderer.forwardChildren) {
-                for (var i = 0; i < childProps.children.length; i++) {
-                    var child = childProps.children[i];
-                    addChild(node, child);
+                if (childProps.children) {
+                    for (var i = 0; i < childProps.children.length; i++) {
+                        var child = childProps.children[i];
+                        addChild(node, child);
+                    }
                 }
             } else if (renderer) {
                 childProps = typeof renderer === 'string'
