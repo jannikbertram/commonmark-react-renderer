@@ -105,7 +105,6 @@ var defaultRenderers = {
         return createElement('span', newProps, props.children);
     },
     latex_inline: function LatexInline(props) {
-        console.log('react renderer props', props);
         var newProps = getCoreProps(props);
         if (props.latexCode) {
             props['data-latex-code'] = props.latexCode;
@@ -281,8 +280,6 @@ function getNodeProps(node, key, opts, renderer, context) {
             break;
         case 'latex_inline':
             props.latexCode = node.latexCode;
-            console.log('node: ', node);
-            console.log('props: ', props);
             break;
         case 'paragraph':
             props.first = !(node._prev && node._prev.type === 'paragraph');
