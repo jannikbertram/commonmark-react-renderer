@@ -105,6 +105,7 @@ var defaultRenderers = {
         return createElement('span', newProps, props.children);
     },
     latex_inline: function LatexInline(props) {
+        console.log('react renderer props', props);
         var newProps = getCoreProps(props);
         if (props.latexCode) {
             props['data-latex-code'] = props.latexCode;
