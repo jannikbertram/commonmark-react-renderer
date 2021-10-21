@@ -104,7 +104,7 @@ var defaultRenderers = {
         newProps['data-search-highlight'] = 'true';
         return createElement('span', newProps, props.children);
     },
-    latexinline: function LatexInline(props) {
+    latex_inline: function LatexInline(props) {
         var newProps = getCoreProps(props);
         if (props.latexCode) {
             props['data-latex-code'] = props.latexCode;
