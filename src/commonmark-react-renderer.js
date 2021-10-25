@@ -17,7 +17,8 @@ var typeAliases = {
     channellink: 'channel_link',
     editedindicator: 'edited_indicator',
     tableRow: 'table_row',
-    tableCell: 'table_cell'
+    tableCell: 'table_cell',
+    latexinline: 'latex_inline'
 };
 
 var defaultRenderers = {
@@ -101,6 +102,14 @@ var defaultRenderers = {
     search_highlight: function SearchHighlight(props) {
         var newProps = getCoreProps(props);
         newProps['data-search-highlight'] = 'true';
+        return createElement('span', newProps, props.children);
+    },
+    latex_inline: function LatexInline(props) {
+        var newProps = getCoreProps(props);
+        if (props.latexCode) {
+            props['data-latex-code'] = props.latexCode;
+        }
+
         return createElement('span', newProps, props.children);
     },
 
@@ -268,6 +277,9 @@ function getNodeProps(node, key, opts, renderer, context) {
             break;
         case 'hashtag':
             props.hashtag = node.hashtag;
+            break;
+        case 'latex_inline':
+            props.latexCode = node.latexCode;
             break;
         case 'paragraph':
             props.first = !(node._prev && node._prev.type === 'paragraph');
