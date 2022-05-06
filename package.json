@@ -25,7 +25,6 @@
   "license": "MIT",
   "devDependencies": {
     "chai": "^4.3.6",
-    "commonmark": "github:mattermost/commonmark.js#90a62d97ed2dbd2d4711a5adda327128f5827983",
     "eslint": "^8.10.0",
     "eslint-config-vaffel": "^5.0.0",
     "eslint-plugin-react": "^7.29.3",
