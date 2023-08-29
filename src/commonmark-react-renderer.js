@@ -18,7 +18,8 @@ var typeAliases = {
     editedindicator: 'edited_indicator',
     tableRow: 'table_row',
     tableCell: 'table_cell',
-    latexinline: 'latex_inline'
+    latexInline: 'latex_inline',
+    maxNodesWarning: 'max_nodes_warning'
 };
 
 var defaultRenderers = {
@@ -131,7 +132,9 @@ var defaultRenderers = {
         }
 
         return createElement('td', newProps, props.children);
-    }
+    },
+
+    max_nodes_warning: null,
 };
 
 var coreTypes = Object.keys(defaultRenderers);
@@ -380,6 +383,7 @@ function renderNodes(block) {
     var e;
     var doc;
     var context = [];
+    var nodeCount = 0;
     var index = 0;
     while ((e = walker.next())) {
         var key = String(index);
@@ -454,6 +458,20 @@ function renderNodes(block) {
             }
         }
 
+        if (entering) {
+            nodeCount += 1;
+
+            // We're rendering too much for React to handle, so don't start rendering anything new while we let the
+            // walker continue back out of the tree
+            if (nodeCount >= this.maxNodes) {
+                if (node.isContainer) {
+                    walker.resumeAt(node, false);
+                }
+
+                continue;
+            }
+        }
+
         if (!isDocument && (disallowedByUser || disallowedByConfig)) {
             if (!this.unwrapDisallowed && entering && node.isContainer) {
                 walker.resumeAt(node, false);
@@ -509,6 +527,14 @@ function renderNodes(block) {
 
     if (context.length !== 0) {
         throw new Error('Expected context to be empty after rendering, but has `' + context.join(', ') + '`');
+    }
+
+    if (nodeCount >= this.maxNodes && this.renderers.max_nodes_warning) {
+        // Inject a warning into text that Markdown in it that's too complex
+        doc.react.children.push(React.createElement(this.renderers.max_nodes_warning, {
+            key: 'max_nodes_warning',
+            nodeCount: nodeCount
+        }));
     }
 
     return doc.react.children;
@@ -580,6 +606,7 @@ function ReactRenderer(options) {
         render: renderNodes,
         linkTarget: opts.linkTarget || false,
         maxDepth: opts.maxDepth || 30,
+        maxNodes: opts.maxNodes || 2000,
         getExtraPropsForNode: opts.getExtraPropsForNode
     };
 }
