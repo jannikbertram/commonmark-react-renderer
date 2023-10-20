@@ -6,6 +6,7 @@ var isPlainObject = require('lodash.isplainobject');
 var xssFilters = require('xss-filters');
 var pascalCase = require('pascalcase');
 
+// Caution: type aliases must be lowercased, see 'normalizeTypeName'
 var typeAliases = {
     blockquote: 'block_quote',
     thematicbreak: 'thematic_break',
@@ -16,10 +17,10 @@ var typeAliases = {
     atmention: 'at_mention',
     channellink: 'channel_link',
     editedindicator: 'edited_indicator',
-    tableRow: 'table_row',
-    tableCell: 'table_cell',
-    latexInline: 'latex_inline',
-    maxNodesWarning: 'max_nodes_warning'
+    tablerow: 'table_row',
+    tablecell: 'table_cell',
+    latexinline: 'latex_inline',
+    maxnodeswarning: 'max_nodes_warning'
 };
 
 var defaultRenderers = {
